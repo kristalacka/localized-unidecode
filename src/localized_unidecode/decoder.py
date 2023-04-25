@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from typing import Optional
 
 from pycountry import countries
@@ -62,6 +63,9 @@ class Decoder:
         if self.decode_symbols and character in self._symbol_map:
             return self._symbol_map[character]
 
+        if character.isascii():
+            return character
+
         logger.warning(f"Unable to decode character {character}, falling back to generic unidecode.")
         return unidecode(character)
 
@@ -84,7 +88,11 @@ class Decoder:
 
     def _load_transliteration(self, language: str):
         try:
-            with open(f"utils/mappings/{language.upper()}.json", "r", encoding="utf-8") as f:
+            with open(
+                os.path.join(os.path.dirname(__file__), f"utils/mappings/{language.upper()}.json"),
+                "r",
+                encoding="utf-8",
+            ) as f:
                 transliteration = json.load(f)
         except FileNotFoundError:
             logger.warning(f"Unable to find transliteration for language {language}")
@@ -93,6 +101,3 @@ class Decoder:
         self._symbol_map |= transliteration.get("symbols", {})
         self._character_map |= transliteration.get("characters", {})
         self._character_map |= {v.upper(): k.capitalize() for k, v in transliteration.get("characters", {}).items()}
-
-        print({v.upper(): k.upper() for k, v in transliteration.get("symbols", {}).items()})
-        print("CHAR MAP", self._character_map)
