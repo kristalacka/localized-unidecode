@@ -60,6 +60,12 @@ class Decoder:
         return "".join(self._decode_character(c) for c in text)
 
     def _decode_character(self, character: str) -> str:
+        """
+        Decodes a single character. Output representation can be multiple characters.
+
+        :param character: Input character
+        :return: Decoded character
+        """
         if character in self.SPECIAL_CHARACTERS:
             return character
 
@@ -76,6 +82,9 @@ class Decoder:
         return unidecode(character)
 
     def _load_transliterations(self):
+        """
+        Loads all relevant transliterations for the decoder.
+        """
         # Load generic transliterations
         if self.main_country.alpha_2 in self.GENERIC_TRANSLITERATIONS:
             self._load_transliteration(self.GENERIC_TRANSLITERATIONS[self.main_country.alpha_2])
@@ -90,6 +99,11 @@ class Decoder:
         self._character_map |= self.character_overrides
 
     def _load_transliteration(self, language: str):
+        """
+        Loads a specific character mapping.
+
+        :param language: mapping to load.
+        """
         try:
             with open(
                 os.path.join(os.path.dirname(__file__), f"utils/mappings/{language.upper()}.json"),

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "localized-unidecode"
-version = "0.0.4"
+version = "0.0.5"
 authors = [{ name = "Kristupas Talačka", email = "kristalacka@gmail.com" }]
 description = "Localized text decoder for converting text into ascii (latin transliteration without extensions)."
 readme = "README.md"
@@ -19,3 +19,4 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/kristalacka/localized-unidecode"
 "Bug Tracker" = "https://github.com/kristalacka/localized-unidecode/issues"
+"Documentation" = "https://localized-unidecode.readthedocs.io/en/latest/"
