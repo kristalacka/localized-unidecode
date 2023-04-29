@@ -28,9 +28,13 @@ class Decoder:
         decode_symbols: bool = False,
     ):
         """
-        _summary_
+        Constructor for symbol decoder.
 
-        :param language: alpha 2 code of the input language
+        :param language: Alpha2 code of the input language
+        :param fallback_language: Alpha2 code of a fallback language, defaults to None
+        :param character_overrides: Custom overrides to replace default decoding behavior, defaults to None
+        :param decode_symbols: Whether to decode symbols, e.g. `« »` to `" "`, defaults to False
+        :raises ValueError: if the provided main language code is invalid
         """
         main_country = countries.get(alpha_2=language)
         if main_country is None:
@@ -42,6 +46,8 @@ class Decoder:
         self.character_overrides = character_overrides or {}
         self.decode_symbols = decode_symbols
 
+        self._character_map = {}
+        self._symbol_map = {}
         self._load_transliterations()
 
     def decode(self, text: str) -> str:
@@ -66,13 +72,10 @@ class Decoder:
         if character.isascii():
             return character
 
-        logger.warning(f"Unable to decode character {character}, falling back to generic unidecode.")
+        logger.debug(f"Unable to decode character {character}, falling back to unidecode.")
         return unidecode(character)
 
     def _load_transliterations(self):
-        self._character_map = {}
-        self._symbol_map = {}
-
         # Load generic transliterations
         if self.main_country.alpha_2 in self.GENERIC_TRANSLITERATIONS:
             self._load_transliteration(self.GENERIC_TRANSLITERATIONS[self.main_country.alpha_2])
@@ -98,6 +101,9 @@ class Decoder:
             logger.warning(f"Unable to find transliteration for language {language}")
             return
 
-        self._symbol_map |= transliteration.get("symbols", {})
-        self._character_map |= transliteration.get("characters", {})
-        self._character_map |= {v.upper(): k.capitalize() for k, v in transliteration.get("characters", {}).items()}
+        self._symbol_map = {**transliteration.get("symbols", {}), **self._symbol_map}
+        self._character_map = {**transliteration.get("characters", {}), **self._character_map}
+        self._character_map = {
+            **{k.upper(): v.capitalize() for k, v in transliteration.get("characters", {}).items()},
+            **self._character_map,
+        }
