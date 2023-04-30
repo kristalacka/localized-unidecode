@@ -17,7 +17,7 @@ For other languages, generic transliteration will be done as a fallback. Contrib
 
 ## Installation
 
-The package can be installed using pip:
+The package can be installed using pip:  
 `pip install -i https://test.pypi.org/simple/ localized-unidecode`
 
 ## Example usage
