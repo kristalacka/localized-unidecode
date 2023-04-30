@@ -38,3 +38,9 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
+
+import mock
+
+MOCK_MODULES = ["pycountry", "unidecode"]
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
