@@ -75,3 +75,19 @@ Output:`lietuvishkas test`
 ## License
 
 This software is licensed under the MIT License. See the LICENSE file for details.
+
+## Development
+
+To run unit tests use the following command from the project's source directory:
+
+```
+python -m unittest
+```
+
+To check coverage use the following command:
+
+```
+python -m coverage run -m unittest
+python -m coverage report
+python -m coverage html --omit="tests/*"
+```
